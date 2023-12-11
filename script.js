@@ -3,22 +3,25 @@
 let secretNumber, currentScore, message;
 let highScore = 0;
 
+//DOM elements
 const currentScoreElement = document.querySelector('.score');
 const highScoreElement = document.querySelector('.highscore');
 const messageElement = document.querySelector('.message');
+const numberElement = document.querySelector('.number');
 
-document.querySelector('.check').addEventListener('click', handleCheckClick);
+//event listeners
 document.querySelector('.again').addEventListener('click', initializeGame);
+document.querySelector('.check').addEventListener('click', handleCheckClick);
 initializeGame();
 
 function initializeGame() {
   secretNumber = Math.trunc(Math.random() * 20) + 1;
   currentScore = 20;
   message = 'Chuta um número...';
+  numberElement.textContent = '?';
+  numberElement.style.width = '15rem';
   document.querySelector('.guess').value = '';
-  document.querySelector('.number').textContent = '?';
   document.querySelector('body').style.backgroundColor = '#222';
-  document.querySelector('.number').style.width = '15rem';
   updateUI();
 }
 
@@ -38,29 +41,33 @@ function isValidInput(guess) {
 }
 
 function evaluateGuess(guess) {
-  if (secretNumber > guess) {
-    message = 'Maaaaais...';
-    currentScore--;
-  } else if (secretNumber < guess) {
-    message = 'meeeeenos...';
-    currentScore--;
-  } else {
+  if (secretNumber === guess) {
     message = '🎉 Acertou miserávi!!!';
     if (currentScore > highScore) {
       highScore = currentScore;
     }
     highScoreElement.textContent = highScore;
-    document.querySelector('.number').textContent = secretNumber;
+    numberElement.textContent = secretNumber;
+    numberElement.style.width = '30rem';
     document.querySelector('body').style.backgroundColor = '#60B347';
-    document.querySelector('.number').style.width = '30rem';
-  }
-
-  if (currentScore === 0) {
-    message = '💀 Perdeeeeeu playboy!';
+  } else {
+    secretNumber > guess ? wrongGuess('Maaaais!') : wrongGuess('Meeeeenos!');
   }
 }
 
 function updateUI() {
   currentScoreElement.textContent = currentScore;
   messageElement.textContent = message;
+}
+
+function wrongGuess(msg) {
+  currentScore--;
+  if (currentScore === 0) {
+    message = '💀 Perdeeeeeu playboy!';
+    numberElement.textContent = secretNumber;
+    numberElement.style.width = '30rem';
+    document.querySelector('body').style.backgroundColor = '#c05746';
+  } else {
+    message = msg;
+  }
 }
